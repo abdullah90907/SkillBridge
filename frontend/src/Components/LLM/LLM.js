@@ -20,10 +20,9 @@ const LLM = ({ showSpinner, singleResponse }) => {
                             <Spinner animation="grow" style={{marginRight: '15px'}} />
                             <span>Loading...</span>
                         </div>
-                    ) : (<CustomCarousel />)
-                ) : (
+                    ) : (<CustomCarousel />)                ) : (
                     <>
-                        <div className='llm-responses p-2' >
+                        <div className={`llm-responses p-2 ${singleResponse ? 'has-responses' : ''}`} >
                             {singleResponse?.Type === "Analysis" && 
                                 <div className="message-container custom-shadow mb-3" style={{animationDelay: '0.1s'}}>
                                     <img src="/logoBlue.png" width={35} height={35} alt="Logo" style={{
