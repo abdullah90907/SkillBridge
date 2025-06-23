@@ -5,7 +5,8 @@
       "src": "frontend/package.json",
       "use": "@vercel/static-build",
       "config": {
-        "distDir": "build"
+        "distDir": "build",
+        "framework": "create-react-app"
       }
     },
     {
@@ -28,7 +29,10 @@
       "maxDuration": 30
     }
   },
-  "env": {
-    "CI": "false"
+  "build": {
+    "env": {
+      "CI": "false",
+      "DISABLE_ESLINT_PLUGIN": "true"
+    }
   }
 }
