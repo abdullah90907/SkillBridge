@@ -7,11 +7,13 @@ const API = process.env.GROQ_API_KEY;
 
 const app = express();
 
-// CORS configuration for production
+// CORS configuration for production - allow all origins for Vercel
 const corsOptions = {
-    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+    origin: true, // Allow all origins for Vercel deployment
     credentials: true,
-    optionsSuccessStatus: 200
+    optionsSuccessStatus: 200,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
 };
 
 app.use(cors(corsOptions));

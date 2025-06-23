@@ -1,11 +1,13 @@
 {
   "name": "skillbridge-fullstack",
   "version": "1.0.0",
-  "description": "SkillBridge - AI-powered career development platform",  "scripts": {
-    "build": "cd frontend && npm install && set CI=false && npm run build",
-    "dev": "concurrently \"cd backend && npm run start\" \"cd frontend && npm start\"",
+  "description": "SkillBridge - AI-powered career development platform",
+  "scripts": {
+    "build": "cd frontend && npm run build",
+    "dev": "concurrently \"cd backend && npm run dev\" \"cd frontend && npm start\"",
     "start": "cd backend && npm start",
-    "vercel-build": "cd frontend && npm install && set CI=false && npm run build"
+    "install-all": "npm install && cd frontend && npm install && cd ../backend && npm install",
+    "vercel-build": "cd frontend && npm run build"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"
