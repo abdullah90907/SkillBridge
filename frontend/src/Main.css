@@ -180,6 +180,34 @@ body {
   color: black;
   padding: 0px 30px;
   height: 50%;
+  min-height: 200px; /* Ensure consistent height for both intro and team sections */
+}
+
+.team-members {
+  gap: 8px; /* Add spacing between team members */
+}
+
+.team-member {
+  display: flex;
+  align-items: center;
+}
+
+.team-member a {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Space between LinkedIn icon and name */
+  text-decoration: none;
+  color: inherit;
+}
+
+.team-member a:hover {
+  text-decoration: none;
+  color: #0077b5; /* LinkedIn blue on hover */
+}
+
+.team-member span {
+  font-size: 16px;
+  line-height: 30px; /* Match the LinkedIn icon height for perfect alignment */
 }
 
 .carousel-item h5 {

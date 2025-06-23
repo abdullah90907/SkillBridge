@@ -32,38 +32,37 @@ const CustomCarousel = () => {
                         <div className="d-flex flex-column justify-content-center align-items-start carousel-item">
                             <div className="text-start">
                                 <h4>Meet the team</h4>
-                                <div className='d-flex flex-column' >
-                                    <div>
+                                <div className='d-flex flex-column team-members' >
+                                    <div className='team-member'>
+                                        <a href="https://www.linkedin.com/in/mr-abdullah-siddique" target="_blank" rel="noopener noreferrer">
+                                            <FaLinkedin size={30} color="#0077b5" />
+                                            <span>Abdullah Siddique</span>
+                                        </a>
+                                    </div>
+                                    <div className='team-member'>
                                         <a href="https://www.linkedin.com/in/ibrahim-bin-mansoor-967377248/" target="_blank" rel="noopener noreferrer">
                                             <FaLinkedin size={30} color="#0077b5" />
+                                            <span>Ibrahim Bin Mansoor</span>
                                         </a>
-                                        Ibrahim Bin Mansoor
                                     </div>
-                                    <div>
+                                    <div className='team-member'>
                                         <a href="https://www.linkedin.com/in/ahmadkhushi/" target="_blank" rel="noopener noreferrer">
                                             <FaLinkedin size={30} color="#0077b5" />
+                                            <span>Ahmad Raza</span>
                                         </a>
-                                        Ahmad Raza
                                     </div>
-                                    <div>
+                                    <div className='team-member'>
                                         <a href="https://www.linkedin.com/in/sarah-khan-48274a315/" target="_blank" rel="noopener noreferrer">
                                             <FaLinkedin size={30} color="#0077b5" />
+                                            <span>Luna</span>
                                         </a>
-                                        Luna
                                     </div>
-                                    <div>
+                                    <div className='team-member'>
                                         <a href="https://www.linkedin.com/in/bilawalmujeeb/" target="_blank" rel="noopener noreferrer">
                                             <FaLinkedin size={30} color="#0077b5" />
+                                            <span>Bilawal Mujeeb</span>
                                         </a>
-                                        Bilawal Mujeeb
                                     </div>
-                                    <div>
-                                        <a href="https://www.linkedin.com/in/abdullah-siddique-682734263/" target="_blank" rel="noopener noreferrer">
-                                            <FaLinkedin size={30} color="#0077b5" />
-                                        </a>
-                                        Abdullah Siddique
-                                    </div>
-
                                 </div>
                             </div>
                         </div>
