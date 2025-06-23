@@ -1,0 +1,13 @@
+{
+  "name": "skillbridge-fullstack",
+  "version": "1.0.0",
+  "description": "SkillBridge - AI-powered career development platform",  "scripts": {
+    "build": "cd frontend && npm ci && npm run build",
+    "dev": "concurrently \"cd backend && npm run start\" \"cd frontend && npm start\"",
+    "start": "cd backend && npm start",
+    "vercel-build": "cd frontend && npm ci && npm run build"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
