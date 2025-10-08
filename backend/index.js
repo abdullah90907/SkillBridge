@@ -8,11 +8,17 @@ const API = process.env.GROQ_API_KEY;
 
 const app = express();
 
-// Enhanced CORS configuration
+// Enhanced CORS configuration for production
 app.use(cors({
-    origin: ['http://localhost:3000', 'http://127.0.0.1:3000'],
+    origin: [
+        'http://localhost:3000', 
+        'http://127.0.0.1:3000',
+        'https://your-netlify-site.netlify.app', // Replace with your actual Netlify URL
+        /\.netlify\.app$/ // Allow any Netlify subdomain
+    ],
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization']
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true
 }));
 
 app.use(bodyParser.json());
