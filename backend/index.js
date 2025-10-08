@@ -13,8 +13,8 @@ app.use(cors({
     origin: [
         'http://localhost:3000', 
         'http://127.0.0.1:3000',
-        'https://your-netlify-site.netlify.app', // Replace with your actual Netlify URL
-        /\.netlify\.app$/ // Allow any Netlify subdomain
+        /\.vercel\.app$/, // Allow any Vercel subdomain
+        process.env.FRONTEND_URL // For custom domains
     ],
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
@@ -31,10 +31,10 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use('/ResumeAnalysis', require('./routes/analysis'));
+app.use('/api/ResumeAnalysis', require('./routes/analysis'));
 
 // Health check endpoint
-app.get('/health', (req, res) => {
+app.get('/api/health', (req, res) => {
     res.json({ status: 'Server is running', timestamp: new Date().toISOString() });
 });
 
