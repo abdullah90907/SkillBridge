@@ -31,8 +31,71 @@ const upload = multer({
 });
 
 // Import utilities directly
-const PlainTextConversion = require('../backend/utilities/PlainTextConversion');
-const GemmaResponse = require('../backend/utilities/GemmaResponse');
+const PdfParser = require('pdf-parse');
+const Groq = require("groq-sdk");
+
+// Initialize Groq client
+const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+
+// Plain text conversion utility
+const PlainTextConversion = (input) => {
+    return new Promise((resolve, reject) => {
+        try {
+            let dataBuffer;
+            
+            // Check if input is a buffer (from multer) or a file path
+            if (Buffer.isBuffer(input)) {
+                dataBuffer = input;
+            } else {
+                // Read from file path (for backward compatibility)
+                const fs = require('fs');
+                dataBuffer = fs.readFileSync(input);
+            }
+            
+            PdfParser(dataBuffer)
+                .then((data) => {
+                    resolve(data.text);
+                })
+                .catch((error) => {
+                    console.error("Error while parsing PDF:", error);
+                    reject(error);
+                });
+        } catch (error) {
+            console.error("Error while processing file:", error);
+            reject(error);
+        }
+    });
+};
+
+// Groq response utility
+const GemmaResponse = {
+    main: async (Content) => {
+        try {
+            const chatCompletion = await groq.chat.completions.create({
+                messages: [
+                    {
+                        role: "system",
+                        content: "You are an AI model designed to assist with user queries in an intelligent and helpful manner.",
+                    },
+                    {
+                        role: "user",
+                        content: Content,
+                    }
+                ],
+                model: "gemma2-9b-it",
+                temperature: 0.5,
+                max_tokens: 1024,
+                top_p: 1,
+                stop: null,
+                stream: false,
+            });
+            return chatCompletion.choices[0]?.message?.content || "";
+        } catch (error) {
+            console.error("Error in Groq API call:", error);
+            throw new Error("Failed to fetch AI response");
+        }
+    }
+};
 
 // Health check
 app.get('/health', (req, res) => {
