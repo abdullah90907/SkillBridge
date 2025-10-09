@@ -179,8 +179,8 @@ const Home = () => {
                             <Upload 
                                 feature1={Analysis} 
                                 feature2={Mock} 
-                                feature3={Career} 
-                                feature4={Recommendation} 
+                                feature3={CareerPaths} 
+                                feature4={SkillsRecommendation} 
                                 handleFileChange={handleFileChange} 
                                 handleSubmit={handleSubmit} 
                                 btnDisabled={btnDisabled} 
