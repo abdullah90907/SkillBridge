@@ -12,7 +12,11 @@ const Upload = ({ feature1, feature2, feature3, feature4, handleFileChange, hand
             <div className='upload-container' >
                 <div className='upload custom-shadow' >
                     <div className='upload-icon-and-button' >
-                        <img src='/submit.png' width={100} height={100} />
+                        <img src="/submit.png" alt="Submit" style={{
+                width: '20px',
+                height: '20px',
+                marginRight: '5px'
+            }} />
                         <Form onSubmit={handleSubmit} className='d-flex flex-column justify-content form-submit mt-3' >
                             <Form.Group controlId="formFile" className="mb-1">
                                 <Form.Control type="file" onChange={handleFileChange} />

@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { Navbar, Container, Row, Col, Button, Form } from 'react-bootstrap'
+import React, { useState } from 'react';
+import { Container, Row, Col, Navbar } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './Main.css'
 import LLM from './Components/LLM/LLM';
@@ -103,7 +103,7 @@ const Home = () => {
             setUploadMessage('Uploading your resume...');
             
             try {
-                const response = await axios.post(`${endpoint}/ResumeAnalysis/uploadResume`, formData, {
+                await axios.post(`${endpoint}/ResumeAnalysis/uploadResume`, formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
                     },
