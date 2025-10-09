@@ -24,7 +24,7 @@ const GemmaResponse = async (Content) => {
                 content: Content,
             }
         ],
-        model: "gemma2-9b-it",
+        model: "meta-llama/llama-4-maverick-17b-128e-instruct",
         temperature: 0.5,
         max_tokens: 1024,
         top_p: 1,
