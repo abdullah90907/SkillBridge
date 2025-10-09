@@ -4,6 +4,7 @@
   "description": "SkillBridge - AI-powered resume analysis and career guidance platform",
   "scripts": {
     "build": "cd frontend && npm install && npm run build",
+    "vercel-build": "cd frontend && npm install && npm run build",
     "start": "cd backend && npm start",
     "dev:frontend": "cd frontend && npm start",
     "dev:backend": "cd backend && npm run dev",
