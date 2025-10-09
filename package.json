@@ -2,9 +2,11 @@
   "name": "skillbridge-app",
   "version": "1.0.0",
   "description": "SkillBridge - AI-powered resume analysis and career guidance platform",
+  "main": "api/index.js",
   "scripts": {
-    "build": "cd frontend && npm install && npm run build",
-    "vercel-build": "cd frontend && npm install && npm run build",
+    "build": "npm run build:frontend",
+    "build:frontend": "cd frontend && npm ci && npm run build",
+    "vercel-build": "npm run build:frontend",
     "start": "cd backend && npm start",
     "dev:frontend": "cd frontend && npm start",
     "dev:backend": "cd backend && npm run dev",
@@ -17,6 +19,9 @@
     "groq-sdk": "^0.3.1",
     "multer": "^1.4.5",
     "pdf-parse": "^1.1.1"
+  },
+  "engines": {
+    "node": ">=18.x"
   },
   "keywords": ["react", "nodejs", "ai", "resume-analysis", "career-guidance"],
   "author": "Abdullah Siddique",
