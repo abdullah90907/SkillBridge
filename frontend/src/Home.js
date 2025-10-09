@@ -18,11 +18,23 @@ const Home = () => {
     const [uploadMessage, setUploadMessage] = useState('')
 
     const Analysis = async () => {
+        if (!selectedFile) {
+            alert('Please select a PDF file first!');
+            return;
+        }
+        
         setShowTextField(false)
         setShowSpinner(true)
 
         try {
-            await axios.post(`${endpoint}/ResumeAnalysis/getanalysis`).then((response) => {
+            const formData = new FormData();
+            formData.append('resume', selectedFile);
+            
+            await axios.post(`${endpoint}/ResumeAnalysis/analysis`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            }).then((response) => {
                 setSingleResponse(response.data)
             }).finally(() => {
                 setShowSpinner(false)
@@ -34,10 +46,22 @@ const Home = () => {
     }
 
     const Mock = async () => {
+        if (!selectedFile) {
+            alert('Please select a PDF file first!');
+            return;
+        }
+        
         setShowTextField(true)
         setShowSpinner(true)
         try {
-            await axios.post(`${endpoint}/ResumeAnalysis/getmockinterviews`).then((response) => {
+            const formData = new FormData();
+            formData.append('resume', selectedFile);
+            
+            await axios.post(`${endpoint}/ResumeAnalysis/mock-interview`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            }).then((response) => {
                 setShowSpinner(false)
                 setSingleResponse(response.data)
             })
@@ -47,31 +71,55 @@ const Home = () => {
         }
     }
 
-    const Career = async () => {
-        setShowTextField(false)
+    const CareerPaths = async () => {
+        if (!selectedFile) {
+            alert('Please select a PDF file first!');
+            return;
+        }
+        
         setShowSpinner(true)
         try {
-            await axios.post(`${endpoint}/ResumeAnalysis/getcareerpaths`).then((response) => {
-                setShowSpinner(false)
+            const formData = new FormData();
+            formData.append('resume', selectedFile);
+            
+            await axios.post(`${endpoint}/ResumeAnalysis/career-suggestions`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            }).then((response) => {
                 setSingleResponse(response.data)
+            }).finally(() => {
+                setShowSpinner(false)
             })
         } catch (error) {
             setShowSpinner(false)
-            console.log("There was an issue while getting career path suggestions")
+            console.log("There was an error while getting career paths")
         }
     }
 
-    const Recommendation = async () => {
-        setShowTextField(false)
+        const SkillsRecommendation = async () => {
+        if (!selectedFile) {
+            alert('Please select a PDF file first!');
+            return;
+        }
+        
         setShowSpinner(true)
         try {
-            await axios.post(`${endpoint}/ResumeAnalysis/getskillsrecommendation`).then((response) => {
-                setShowSpinner(false)
+            const formData = new FormData();
+            formData.append('resume', selectedFile);
+            
+            await axios.post(`${endpoint}/ResumeAnalysis/skills-recommendations`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            }).then((response) => {
                 setSingleResponse(response.data)
+            }).finally(() => {
+                setShowSpinner(false)
             })
         } catch (error) {
             setShowSpinner(false)
-            console.log("There was an issue while getting career path suggestions")
+            console.log("There was an error while getting skills recommendation")
         }
     }
 
@@ -91,43 +139,15 @@ const Home = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const formData = new FormData();
-        formData.append('file', selectedFile);
-
         if (!selectedFile) {
             setUploadStatus('error');
             setUploadMessage('Please select a PDF file first.');
             setTimeout(() => setUploadStatus(''), 3000);
         } else {
-            setUploadStatus('uploading');
-            setUploadMessage('Uploading your resume...');
-            
-            try {
-                await axios.post(`${endpoint}/ResumeAnalysis/uploadResume`, formData, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data',
-                    },
-                });
-                
-                setUploadStatus('success');
-                setUploadMessage('Resume uploaded successfully! You can now use the analysis features.');
-                setBtnDisabled(false);
-                setTimeout(() => setUploadStatus(''), 4000);
-                
-            } catch (error) {
-                console.error('Error uploading file:', error);
-                setUploadStatus('error');
-                
-                if (error.response) {
-                    setUploadMessage(`Upload failed: ${error.response.data || 'Server error'}`);
-                } else if (error.request) {
-                    setUploadMessage('Upload failed: Cannot connect to server. Please ensure the backend is running on port 8000.');
-                } else {
-                    setUploadMessage('Upload failed: An unexpected error occurred.');
-                }
-                
-                setTimeout(() => setUploadStatus(''), 5000);
-            }
+            setUploadStatus('success');
+            setUploadMessage('Resume selected successfully! You can now use the analysis features.');
+            setBtnDisabled(false);
+            setTimeout(() => setUploadStatus(''), 4000);
         }
     };
 
