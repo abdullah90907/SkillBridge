@@ -2,85 +2,91 @@ import React from 'react'
 import '../../Main.css'
 import { Button, Row, Col, Form } from 'react-bootstrap'
 
-
 const Upload = ({ feature1, feature2, feature3, feature4, handleFileChange, handleSubmit, btnDisabled, uploadStatus, uploadMessage }) => {
 
     return (
-        <div className="section-left custom-shadow">
-            {/* Add content for the first section */}
-            <h3>Upload Resume/CV</h3>
-            <div className='upload-container' >
-                <div className='upload custom-shadow' >
-                    <div className='upload-icon-and-button' >
-                        <img src="/submit.png" alt="Submit" style={{
-                width: '20px',
-                height: '20px',
-                marginRight: '5px'
-            }} />
-                        <Form onSubmit={handleSubmit} className='d-flex flex-column justify-content form-submit mt-3' >
-                            <Form.Group controlId="formFile" className="mb-1">
+        <div className="section-left">
+            <h3><span>Upload Resume / CV</span></h3>
+
+            <div className='upload-container'>
+                <div className='upload'>
+
+                    {/* Upload Icon */}
+                    <div className='upload-icon-and-button'>
+                        <div className="upload-icon-wrap">
+                            <img src="/submit.png" alt="Upload icon" />
+                        </div>
+
+                        <Form onSubmit={handleSubmit} className='d-flex flex-column align-items-center form-submit w-100 gap-2'>
+                            <Form.Group controlId="formFile" className="mb-1 w-100">
                                 <Form.Control type="file" onChange={handleFileChange} />
                             </Form.Group>
-                            <Button className='submit-btn btn-shadow mb-3' type='submit'>Upload Resume</Button>
+                            <Button className='submit-btn btn-shadow mb-1 w-100' type='submit'>
+                                ⚡ Confirm Resume
+                            </Button>
                         </Form>
                     </div>
-                    <div className='upload-instructions' >
-                        <ul>
-                            <li>Please make sure that the document is in a pdf form.</li>
-                            <li>Upload the document by clicking on the icon and then click on the button</li>
-                        </ul>
 
+                    {/* Instructions */}
+                    <div className='upload-instructions'>
+                        <ul>
+                            <li>Document must be in <strong>PDF format</strong> only.</li>
+                            <li>Select your file then click <strong>Confirm Resume</strong> to unlock features.</li>
+                        </ul>
                     </div>
-                    
+
                     {/* Upload Status Notification */}
                     {uploadStatus && (
                         <div className={`upload-notification ${uploadStatus}`}>
                             {uploadStatus === 'uploading' && (
-                                <div className="d-flex align-items-center">
-                                    <div className="upload-spinner me-2"></div>
+                                <div className="d-flex align-items-center gap-2">
+                                    <div className="loading-dots">
+                                        <span></span><span></span><span></span>
+                                    </div>
                                     <span>{uploadMessage}</span>
                                 </div>
                             )}
                             {uploadStatus === 'success' && (
-                                <div className="d-flex align-items-center">
-                                    <span className="upload-icon success me-2">✅</span>
+                                <div className="d-flex align-items-center gap-2">
+                                    <span>✅</span>
                                     <span>{uploadMessage}</span>
                                 </div>
                             )}
                             {uploadStatus === 'error' && (
-                                <div className="d-flex align-items-center">
-                                    <span className="upload-icon error me-2">❌</span>
+                                <div className="d-flex align-items-center gap-2">
+                                    <span>❌</span>
                                     <span>{uploadMessage}</span>
                                 </div>
                             )}
                         </div>
                     )}
 
-                    <div className='feature-choice'>
-                        <Row >
-                            <Col xs={6} className="mb-3">
-                                <Button className="btn"
-                                    onClick={feature1}
-                                    disabled={btnDisabled}
-                                >Resume Analysis</Button>
+                    {/* Feature Buttons */}
+                    <div className='feature-choice w-100'>
+                        <Row className="g-2 w-100 m-0">
+                            <Col xs={6}>
+                                <Button className="btn" onClick={feature1} disabled={btnDisabled}>
+                                    <span>🎯 Resume Analysis</span>
+                                </Button>
                             </Col>
-                            <Col xs={6} className="mb-3">
-                                <Button className="btn"
-                                    onClick={feature2}
-                                    disabled={btnDisabled}>Mock Interview</Button>
+                            <Col xs={6}>
+                                <Button className="btn" onClick={feature2} disabled={btnDisabled}>
+                                    <span>🎤 Mock Interview</span>
+                                </Button>
                             </Col>
-                            <Col xs={6} className="mb-3">
-                                <Button className="btn"
-                                    onClick={feature3}
-                                    disabled={btnDisabled}>Career path suggestion</Button>
+                            <Col xs={6}>
+                                <Button className="btn" onClick={feature3} disabled={btnDisabled}>
+                                    <span>🗺️ Career Paths</span>
+                                </Button>
                             </Col>
-                            <Col xs={6} className="mb-3">
-                                <Button className="btn"
-                                    onClick={feature4}
-                                    disabled={btnDisabled}>Skills Recommendation</Button>
+                            <Col xs={6}>
+                                <Button className="btn" onClick={feature4} disabled={btnDisabled}>
+                                    <span>💡 Skills Guide</span>
+                                </Button>
                             </Col>
                         </Row>
                     </div>
+
                 </div>
             </div>
         </div>

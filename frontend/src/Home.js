@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Container, Row, Col, Navbar } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './Main.css'
 import LLM from './Components/LLM/LLM';
@@ -155,27 +154,28 @@ const Home = () => {
     return (
         <>
             <div className='surrounding-div' >
+                {/* ── Navbar ── */}
                 <div className='main-outside-div' >
-                    <Navbar className="bg-body-tertiary boot-nav custom-shadow">
-                        <Container className='d-flex justify-content-center' >
-                            <Navbar.Brand href="#home" >
-                                <img
-                                    alt=""
-                                    src="/logoBlue.png"
-                                    width={30}
-                                    // height={30}
-                                    className="d-inline-block align-top"
-                                />
-                                SkillBridge
-                            </Navbar.Brand>
-                        </Container>
-                    </Navbar>
+                    <nav className="boot-nav navbar navbar-expand-lg">
+                        <div className="container-fluid d-flex justify-content-center">
+                            <a className="navbar-brand" href="#home">
+                                <div className="navbar-logo-wrap">
+                                    <img
+                                        alt="SkillBridge Logo"
+                                        src="/logoBlue.png"
+                                    />
+                                </div>
+                                <span className="navbar-brand-text">SkillBridge</span>
+                                <span className="nav-badge">AI</span>
+                            </a>
+                        </div>
+                    </nav>
                 </div>
 
-                {/* New section below the navbar */}
+                {/* ── Main Grid ── */}
                 <div className='grid-container' >
-                    <Row className='h-100'>
-                        <Col className="d-flex justify-content-center" xs={12} sm={12} md={6} lg={5} xl={5}>
+                    <div className="row h-100">
+                        <div className="col-12 col-md-6 col-lg-5 d-flex justify-content-center">
                             <Upload 
                                 feature1={Analysis} 
                                 feature2={Mock} 
@@ -188,11 +188,11 @@ const Home = () => {
                                 uploadStatus={uploadStatus}
                                 uploadMessage={uploadMessage}
                             />
-                        </Col>
-                        <Col className="d-flex justify-content-center" xs={12} sm={12} md={6} lg={7} xl={7}>
+                        </div>
+                        <div className="col-12 col-md-6 col-lg-7 d-flex justify-content-center">
                             <LLM showTextField={showTextField} showSpinner={showSpinner} singleResponse={singleResponse} />
-                        </Col>
-                    </Row>
+                        </div>
+                    </div>
                 </div>
 
             </div>

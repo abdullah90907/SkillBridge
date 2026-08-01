@@ -1,84 +1,74 @@
 import '../../Main.css'
-import Spinner from 'react-bootstrap/Spinner';
 import ReactMarkdown from 'react-markdown';
 import CustomCarousel from './CustomCarousel';
-
 
 const LLM = ({ showSpinner, singleResponse }) => {
 
     return (
-        <div className="section-right custom-shadow">
-            {/* Add content for the second section */}
-            <h3>SkillBridge</h3>
-            <div className='llm-container' >
+        <div className="section-right">
+            <h3>✦ SkillBridge AI</h3>
+
+            <div className='llm-container'>
                 {singleResponse?.length === 0 ? (
                     showSpinner ? (
-                        <div className='d-flex justify-content-start align-items-center loading-state' style={{
-                            fontWeight: '600', 
-                            color: 'var(--primary-blue)'
-                        }}>
-                            <Spinner animation="grow" style={{marginRight: '15px'}} />
-                            <span>Loading...</span>
+                        <div className='loading-state'>
+                            <div className="loading-dots">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                            <span className="loading-label">Analyzing your resume…</span>
                         </div>
-                    ) : (<CustomCarousel />)                ) : (
+                    ) : (
+                        <CustomCarousel />
+                    )
+                ) : (
                     <>
-                        <div className={`llm-responses p-2 ${singleResponse ? 'has-responses' : ''}`} >
-                            {singleResponse?.Type === "Analysis" && 
-                                <div className="message-container custom-shadow mb-3" style={{animationDelay: '0.1s'}}>
-                                    <img src="/logoBlue.png" width={35} height={35} alt="Logo" style={{
-                                        borderRadius: '50%',
-                                        border: '3px solid #667eea',
-                                        animation: 'pulse 2s infinite'
-                                    }} />
-                                    <div className='message-container-text' >
+                        <div className={`llm-responses p-2 ${singleResponse ? 'has-responses' : ''}`}>
+
+                            {singleResponse?.Type === "Analysis" &&
+                                <div className="message-container" style={{ animationDelay: '0.1s' }}>
+                                    <img src="/logoBlue.png" width={40} height={40} alt="SkillBridge AI" />
+                                    <div className='message-container-text'>
                                         <h3>🎯 Skill Gaps</h3>
                                         <ReactMarkdown>{singleResponse.SkillsGaps}</ReactMarkdown>
-                                        <br></br>
+                                        <br />
                                         <h3>📚 Recommended Course</h3>
                                         <ReactMarkdown>{singleResponse.RecommendedCourse}</ReactMarkdown>
-                                        <br></br>
+                                        <br />
                                         <h3>🏆 Recommended Certificates</h3>
                                         <ReactMarkdown>{singleResponse.RecommendedCertificates}</ReactMarkdown>
-                                        <br></br>
+                                        <br />
                                         <h3>🚀 Relevant Projects</h3>
                                         <ReactMarkdown>{singleResponse.ReleventProjects}</ReactMarkdown>
                                     </div>
                                 </div>
                             }
-                            {singleResponse?.Type === 'Career' && 
-                                <div className="message-container custom-shadow mb-3" style={{animationDelay: '0.2s'}}>
-                                    <img src="/logoBlue.png" width={35} height={35} alt="Logo" style={{
-                                        borderRadius: '50%',
-                                        border: '3px solid #667eea',
-                                        animation: 'pulse 2s infinite'
-                                    }} />
-                                    <div className='message-container-text' >
-                                        <h3>🎯 Recommended Career Path</h3>
+
+                            {singleResponse?.Type === 'Career' &&
+                                <div className="message-container" style={{ animationDelay: '0.2s' }}>
+                                    <img src="/logoBlue.png" width={40} height={40} alt="SkillBridge AI" />
+                                    <div className='message-container-text'>
+                                        <h3>🗺️ Recommended Career Path</h3>
                                         <ReactMarkdown>{singleResponse.recommendedPaths}</ReactMarkdown>
                                     </div>
                                 </div>
                             }
-                            {singleResponse?.Type === "Recommend" && 
-                                <div className="message-container custom-shadow mb-3" style={{animationDelay: '0.3s'}}>
-                                    <img src="/logoBlue.png" width={35} height={35} alt="Logo" style={{
-                                        borderRadius: '50%',
-                                        border: '3px solid #667eea',
-                                        animation: 'pulse 2s infinite'
-                                    }} />
-                                    <div className='message-container-text' >
+
+                            {singleResponse?.Type === "Recommend" &&
+                                <div className="message-container" style={{ animationDelay: '0.3s' }}>
+                                    <img src="/logoBlue.png" width={40} height={40} alt="SkillBridge AI" />
+                                    <div className='message-container-text'>
                                         <h3>💡 Recommended Skills to Learn</h3>
                                         <ReactMarkdown>{singleResponse.SkillsRoadMap}</ReactMarkdown>
                                     </div>
                                 </div>
                             }
-                            {singleResponse?.Type === "Mock" && 
-                                <div className="message-container custom-shadow mb-3" style={{animationDelay: '0.4s'}}>
-                                    <img src="/logoBlue.png" width={35} height={35} alt="Logo" style={{
-                                        borderRadius: '50%',
-                                        border: '3px solid #667eea',
-                                        animation: 'pulse 2s infinite'
-                                    }} />
-                                    <div className='message-container-text' >
+
+                            {singleResponse?.Type === "Mock" &&
+                                <div className="message-container" style={{ animationDelay: '0.4s' }}>
+                                    <img src="/logoBlue.png" width={40} height={40} alt="SkillBridge AI" />
+                                    <div className='message-container-text'>
                                         <h3>🎤 Mock Interview</h3>
                                         <h3>❓ Questions</h3>
                                         <ReactMarkdown>{singleResponse.Questions}</ReactMarkdown>
@@ -87,20 +77,23 @@ const LLM = ({ showSpinner, singleResponse }) => {
                                     </div>
                                 </div>
                             }
+
                         </div>
-                        {showSpinner && 
-                            <div className='d-flex justify-content-start align-items-center loading-state' style={{
-                                fontWeight: '600', 
-                                color: 'var(--primary-blue)'
-                            }}>
-                                <Spinner animation="grow" style={{marginRight: '15px'}} />
-                                <span>Loading...</span>
+
+                        {showSpinner &&
+                            <div className='loading-state mt-3'>
+                                <div className="loading-dots">
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                </div>
+                                <span className="loading-label">Processing…</span>
                             </div>
                         }
                     </>
                 )}
             </div>
-        </div >
+        </div>
     )
 }
 
