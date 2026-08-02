@@ -1,8 +1,8 @@
 import React from 'react'
 import '../../Main.css'
-import { Button, Row, Col, Form } from 'react-bootstrap'
+import { Button, Form } from 'react-bootstrap'
 
-const Upload = ({ feature1, feature2, feature3, feature4, handleFileChange, handleSubmit, btnDisabled, uploadStatus, uploadMessage }) => {
+const Upload = ({ feature1, feature2, feature3, feature4, handleFileChange, handleSubmit, uploadStatus, uploadMessage, hasResume }) => {
 
     return (
         <div className="section-left">
@@ -30,8 +30,8 @@ const Upload = ({ feature1, feature2, feature3, feature4, handleFileChange, hand
                     {/* Instructions */}
                     <div className='upload-instructions'>
                         <ul>
-                            <li>Document must be in <strong>PDF format</strong> only.</li>
-                            <li>Select your file then click <strong>Confirm Resume</strong> to unlock features.</li>
+                            <li>Upload your <strong>Resume, CV, or Document</strong> (PDF, TXT, etc.).</li>
+                            <li>Resume is <strong>optional</strong> — all features work without one too!</li>
                         </ul>
                     </div>
 
@@ -54,37 +54,36 @@ const Upload = ({ feature1, feature2, feature3, feature4, handleFileChange, hand
                             )}
                             {uploadStatus === 'error' && (
                                 <div className="d-flex align-items-center gap-2">
-                                    <span>❌</span>
+                                    <span>⚠️</span>
                                     <span>{uploadMessage}</span>
                                 </div>
                             )}
                         </div>
                     )}
 
-                    {/* Feature Buttons */}
+                    {/* No-resume hint */}
+                    {!hasResume && !uploadStatus && (
+                        <div className="no-resume-hint">
+                            💡 No resume? No problem — tap any feature below for guidance!
+                        </div>
+                    )}
+
+                    {/* Feature Buttons — 2x2 Grid Layout */}
                     <div className='feature-choice w-100'>
-                        <Row className="g-2 w-100 m-0">
-                            <Col xs={6}>
-                                <Button className="btn" onClick={feature1} disabled={btnDisabled}>
-                                    <span>🎯 Resume Analysis</span>
-                                </Button>
-                            </Col>
-                            <Col xs={6}>
-                                <Button className="btn" onClick={feature2} disabled={btnDisabled}>
-                                    <span>🎤 Mock Interview</span>
-                                </Button>
-                            </Col>
-                            <Col xs={6}>
-                                <Button className="btn" onClick={feature3} disabled={btnDisabled}>
-                                    <span>🗺️ Career Paths</span>
-                                </Button>
-                            </Col>
-                            <Col xs={6}>
-                                <Button className="btn" onClick={feature4} disabled={btnDisabled}>
-                                    <span>💡 Skills Guide</span>
-                                </Button>
-                            </Col>
-                        </Row>
+                        <div className="feature-grid-2x2">
+                            <Button className="feature-btn" onClick={feature1}>
+                                <span>🎯 Resume Analysis</span>
+                            </Button>
+                            <Button className="feature-btn" onClick={feature2}>
+                                <span>🎤 Mock Interview</span>
+                            </Button>
+                            <Button className="feature-btn" onClick={feature3}>
+                                <span>🗺️ Career Paths</span>
+                            </Button>
+                            <Button className="feature-btn" onClick={feature4}>
+                                <span>💡 Skills Guide</span>
+                            </Button>
+                        </div>
                     </div>
 
                 </div>

@@ -2,29 +2,35 @@ const PdfParser = require('pdf-parse');
 const fs = require('fs');
 
 const PlainTextConversion = (input) => {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
         try {
             let dataBuffer;
-            
-            // Check if input is a buffer (from multer) or a file path
             if (Buffer.isBuffer(input)) {
                 dataBuffer = input;
             } else {
-                // Read from file path (for backward compatibility)
-                dataBuffer = fs.readFileSync(input);
+                if (fs.existsSync(input)) {
+                    dataBuffer = fs.readFileSync(input);
+                } else {
+                    return resolve("");
+                }
             }
             
             PdfParser(dataBuffer)
                 .then((data) => {
-                    resolve(data.text);
+                    resolve(data.text || "");
                 })
                 .catch((error) => {
-                    console.error("Error while parsing PDF:", error);
-                    reject(error);
+                    // If PDF parsing fails, try converting buffer to text (for txt/other text files)
+                    try {
+                        const rawText = dataBuffer.toString('utf8').replace(/[^\x20-\x7E\n\r\t]/g, ' ');
+                        resolve(rawText || "");
+                    } catch (e) {
+                        resolve("");
+                    }
                 });
         } catch (error) {
             console.error("Error while processing file:", error);
-            reject(error);
+            resolve("");
         }
     });
 };

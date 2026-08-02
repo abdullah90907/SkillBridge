@@ -179,16 +179,21 @@ body::after {
 }
 
 /* ============================================================
-   LAYOUT
+   LAYOUT — full-height sticky panels
    ============================================================ */
 .surrounding-div {
   min-height: 100vh;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
   position: relative;
   z-index: 1;
+  overflow: hidden;
 }
 
 .main-outside-div {
-  padding: 18px 20px 10px;
+  padding: 16px 20px 8px;
+  flex-shrink: 0;
   animation: fadeInUp 0.6s ease-out;
 }
 
@@ -266,22 +271,32 @@ body::after {
 }
 
 /* ============================================================
-   MAIN GRID
+   MAIN GRID — fills remaining viewport height
    ============================================================ */
 .grid-container {
-  padding: 20px;
+  padding: 0 20px 20px;
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
   animation: fadeInUp 0.8s ease-out 0.15s both;
 }
 
 .grid-container .row {
   margin: 0;
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 20px;
+  flex: 1;
+  overflow: hidden;
+  height: 100%;
 }
 
 .grid-container .row > [class*="col-"] {
   padding: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 /* ============================================================
@@ -307,21 +322,22 @@ body::after {
 }
 
 /* ============================================================
-   LEFT PANEL — UPLOAD
+   LEFT PANEL — UPLOAD (fills column height, scrolls internally)
    ============================================================ */
 .section-left {
   width: 100%;
-  min-height: 580px;
+  flex: 1;
   display: flex;
   flex-direction: column;
-  padding: 28px 26px;
+  padding: 24px 22px;
   animation: fadeInLeft 0.8s ease-out 0.2s both;
   background: var(--bg-card);
   border: 1px solid var(--border-card);
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-md);
   position: relative;
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .section-left::before {
@@ -587,7 +603,7 @@ body::after {
 }
 
 /* ============================================================
-   FEATURE BUTTONS GRID
+   FEATURE BUTTONS GRID (2x2 Layout)
    ============================================================ */
 .feature-choice {
   width: 100%;
@@ -595,28 +611,23 @@ body::after {
   animation: fadeInUp 0.8s ease-out 0.5s both;
 }
 
-.feature-choice .row {
-  display: flex !important;
-  flex-wrap: wrap !important;
-  gap: 10px !important;
-  margin: 0 !important;
-}
-
-.feature-choice .col {
-  flex: 0 0 calc(50% - 5px) !important;
-  max-width: calc(50% - 5px) !important;
-  padding: 0 !important;
+.feature-grid-2x2 {
+  display: grid !important;
+  grid-template-columns: repeat(2, 1fr) !important;
+  gap: 12px !important;
+  width: 100% !important;
 }
 
 /* The actual buttons */
+.feature-btn,
 .feature-choice .btn {
   width: 100% !important;
-  padding: 11px 8px !important;
+  padding: 12px 10px !important;
   border-radius: var(--radius-sm) !important;
   border: 1.5px solid rgba(13,148,136,0.18) !important;
   background: #ffffff !important;
   color: var(--text-body) !important;
-  font-size: 0.77rem !important;
+  font-size: 0.78rem !important;
   font-weight: 700 !important;
   font-family: 'Plus Jakarta Sans', sans-serif !important;
   letter-spacing: 0.02em !important;
@@ -630,11 +641,12 @@ body::after {
   position: relative !important;
   overflow: hidden !important;
   white-space: normal !important;
-  min-height: 50px !important;
+  min-height: 52px !important;
   box-shadow: var(--shadow-xs) !important;
-  gap: 5px !important;
+  gap: 6px !important;
 }
 
+.feature-btn::before,
 .feature-choice .btn::before {
   content: '';
   position: absolute;
@@ -644,8 +656,10 @@ body::after {
   transition: opacity 0.25s ease;
 }
 
+.feature-btn:hover:not(:disabled)::before,
 .feature-choice .btn:hover:not(:disabled)::before { opacity: 1; }
 
+.feature-btn:hover:not(:disabled),
 .feature-choice .btn:hover:not(:disabled) {
   color: #fff !important;
   border-color: transparent !important;
@@ -670,14 +684,14 @@ body::after {
 }
 
 /* ============================================================
-   RIGHT PANEL — LLM OUTPUT
+   RIGHT PANEL — LLM OUTPUT (fixed height, response scrolls inside)
    ============================================================ */
 .section-right {
   width: 100%;
-  min-height: 580px;
+  flex: 1;
   display: flex;
   flex-direction: column;
-  padding: 28px 26px;
+  padding: 24px 22px;
   animation: fadeInRight 0.8s ease-out 0.2s both;
   background: var(--bg-card);
   border: 1px solid var(--border-card);
@@ -724,6 +738,8 @@ body::after {
 
 /* ============================================================
    LLM CONTAINER & RESPONSES
+   — llm-container fills the card height
+   — llm-responses is the scrollable response box (STICKY / FIXED)
    ============================================================ */
 .llm-container {
   flex: 1;
@@ -731,16 +747,20 @@ body::after {
   flex-direction: column;
   padding: 4px 0;
   overflow: hidden;
+  min-height: 0;
 }
 
+/* The scrollable box — takes all remaining space, NEVER overflows the card */
 .llm-responses {
   flex: 1;
+  min-height: 0;
   overflow-y: auto;
+  overflow-x: hidden;
   padding-right: 6px;
 }
 
+/* Same when responses are present — no max-height override needed, flex handles it */
 .llm-responses.has-responses {
-  max-height: 510px !important;
   overflow-y: auto !important;
 }
 
@@ -1203,21 +1223,71 @@ body::after {
 /* ============================================================
    RESPONSIVE
    ============================================================ */
+
+/* Desktop (≥992px): side-by-side, full viewport height */
+@media (min-width: 992px) {
+  .grid-container .row {
+    flex-wrap: nowrap;
+    align-items: stretch;
+  }
+
+  /* Left column: ~40% */
+  .grid-container .row > .col-12.col-md-6.col-lg-5 {
+    flex: 0 0 41%;
+    max-width: 41%;
+    min-width: 0;
+  }
+
+  /* Right column: ~60% */
+  .grid-container .row > .col-12.col-md-6.col-lg-7 {
+    flex: 0 0 59%;
+    max-width: 59%;
+    min-width: 0;
+  }
+
+  .section-left, .section-right {
+    height: 100%;
+  }
+}
+
+/* Tablet (768–991px): stack vertically, auto height panels */
 @media (max-width: 991px) {
+  .surrounding-div {
+    height: auto;
+    min-height: 100vh;
+    overflow: visible;
+  }
+
+  .grid-container {
+    overflow: visible;
+    flex: none;
+    padding: 0 14px 20px;
+  }
+
   .grid-container .row {
     flex-direction: column;
-    gap: 20px;
+    flex-wrap: wrap;
+    height: auto;
+    overflow: visible;
   }
 
   .grid-container .row > [class*="col-"] {
     width: 100% !important;
     max-width: 100% !important;
     flex: none !important;
+    overflow: visible;
   }
 
-  .section-left,
-  .section-right {
-    min-height: auto;
+  .section-left, .section-right {
+    flex: none;
+    height: auto;
+    min-height: 500px;
+    overflow-y: auto;
+  }
+
+  .llm-responses {
+    max-height: 420px;
+    min-height: 280px;
   }
 
   .carousel-control-prev { left: 2px !important; }
@@ -1225,47 +1295,60 @@ body::after {
 
   .skillbridge-intro-section,
   .team-section {
+    min-height: 260px !important;
     padding: 20px 18px !important;
-    min-height: 280px !important;
   }
 }
 
+/* Mobile (≤767px) */
 @media (max-width: 767px) {
-  .main-outside-div { padding: 14px 14px 8px; }
-  .grid-container { padding: 14px; }
+  .main-outside-div { padding: 12px 12px 6px; }
 
-  .section-left,
-  .section-right { padding: 20px 16px; }
+  .section-left, .section-right {
+    padding: 18px 14px;
+    min-height: auto;
+  }
 
-  .boot-nav { padding: 10px 16px !important; }
-  .boot-nav .navbar-brand { font-size: 1.18rem; }
+  .boot-nav { padding: 10px 14px !important; border-radius: 14px !important; }
+  .boot-nav .navbar-brand { font-size: 1.1rem; }
+  .navbar-logo-wrap { width: 34px; height: 34px; }
+  .nav-badge { display: none; }
+
+  .feature-choice .col {
+    flex: 0 0 calc(50% - 5px) !important;
+    max-width: calc(50% - 5px) !important;
+  }
+
+  .llm-responses { max-height: 340px; }
+
+  .skillbridge-intro-section h4,
+  .team-section h4 { font-size: 1.2rem !important; }
+
+  .upload-icon-wrap { width: 56px; height: 56px; }
+}
+
+/* Small mobile (≤480px) */
+@media (max-width: 480px) {
+  .main-outside-div { padding: 10px 10px 6px; }
+
+  .section-left, .section-right {
+    padding: 14px 12px;
+    border-radius: 16px !important;
+  }
+
+  .section-left h3, .section-right h3 { font-size: 1.05rem; }
 
   .feature-choice .col {
     flex: 0 0 100% !important;
     max-width: 100% !important;
   }
 
-  .llm-responses.has-responses { max-height: 360px !important; }
+  .feature-choice .btn { min-height: 44px !important; }
 
-  .skillbridge-intro-section h4,
-  .team-section h4 { font-size: 1.25rem !important; }
-}
+  .submit-btn { font-size: 0.82rem !important; padding: 10px 16px !important; }
 
-@media (max-width: 480px) {
-  .section-left,
-  .section-right { padding: 16px 14px; border-radius: var(--radius-lg) !important; }
-
-  .boot-nav .navbar-brand { font-size: 1.05rem; }
-  .navbar-logo-wrap { width: 34px; height: 34px; }
-
-  .submit-btn { padding: 10px 18px !important; font-size: 0.83rem !important; }
-
-  .upload-icon-wrap { width: 58px; height: 58px; }
-}
-
-@media (min-width: 992px) {
-  .grid-container .row { flex-wrap: nowrap; }
-
-  .grid-container .row > .col-lg-5 { flex: 0 0 41.666%; max-width: 41.666%; }
-  .grid-container .row > .col-lg-7 { flex: 0 0 58.333%; max-width: 58.333%; }
+  .skillbridge-intro-section, .team-section {
+    padding: 16px 14px !important;
+    min-height: 220px !important;
+  }
 }

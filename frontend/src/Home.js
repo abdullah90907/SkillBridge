@@ -10,29 +10,29 @@ const Home = () => {
 
     const [selectedFile, setSelectedFile] = useState(null);
     const [showTextField, setShowTextField] = useState(false)
-    const [btnDisabled, setBtnDisabled] = useState(true)
+    const [btnDisabled, setBtnDisabled] = useState(false)   // always enabled
     const [singleResponse, setSingleResponse] = useState([])
     const [showSpinner, setShowSpinner] = useState(false)
-    const [uploadStatus, setUploadStatus] = useState('') // 'uploading', 'success', 'error', ''
+    const [uploadStatus, setUploadStatus] = useState('')
     const [uploadMessage, setUploadMessage] = useState('')
 
-    const Analysis = async () => {
-        if (!selectedFile) {
-            alert('Please select a PDF file first!');
-            return;
+    // Shared helper — builds FormData with resume if available
+    const buildFormData = () => {
+        const formData = new FormData();
+        if (selectedFile) {
+            formData.append('resume', selectedFile);
         }
-        
+        // Let backend know whether a resume was provided
+        formData.append('hasResume', selectedFile ? 'true' : 'false');
+        return formData;
+    }
+
+    const Analysis = async () => {
         setShowTextField(false)
         setShowSpinner(true)
-
         try {
-            const formData = new FormData();
-            formData.append('resume', selectedFile);
-            
-            await axios.post(`${endpoint}/ResumeAnalysis/analysis`, formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
+            await axios.post(`${endpoint}/ResumeAnalysis/analysis`, buildFormData(), {
+                headers: { 'Content-Type': 'multipart/form-data' },
             }).then((response) => {
                 setSingleResponse(response.data)
             }).finally(() => {
@@ -45,21 +45,11 @@ const Home = () => {
     }
 
     const Mock = async () => {
-        if (!selectedFile) {
-            alert('Please select a PDF file first!');
-            return;
-        }
-        
         setShowTextField(true)
         setShowSpinner(true)
         try {
-            const formData = new FormData();
-            formData.append('resume', selectedFile);
-            
-            await axios.post(`${endpoint}/ResumeAnalysis/mock-interview`, formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
+            await axios.post(`${endpoint}/ResumeAnalysis/mock-interview`, buildFormData(), {
+                headers: { 'Content-Type': 'multipart/form-data' },
             }).then((response) => {
                 setShowSpinner(false)
                 setSingleResponse(response.data)
@@ -71,20 +61,10 @@ const Home = () => {
     }
 
     const CareerPaths = async () => {
-        if (!selectedFile) {
-            alert('Please select a PDF file first!');
-            return;
-        }
-        
         setShowSpinner(true)
         try {
-            const formData = new FormData();
-            formData.append('resume', selectedFile);
-            
-            await axios.post(`${endpoint}/ResumeAnalysis/career-suggestions`, formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
+            await axios.post(`${endpoint}/ResumeAnalysis/career-suggestions`, buildFormData(), {
+                headers: { 'Content-Type': 'multipart/form-data' },
             }).then((response) => {
                 setSingleResponse(response.data)
             }).finally(() => {
@@ -96,21 +76,11 @@ const Home = () => {
         }
     }
 
-        const SkillsRecommendation = async () => {
-        if (!selectedFile) {
-            alert('Please select a PDF file first!');
-            return;
-        }
-        
+    const SkillsRecommendation = async () => {
         setShowSpinner(true)
         try {
-            const formData = new FormData();
-            formData.append('resume', selectedFile);
-            
-            await axios.post(`${endpoint}/ResumeAnalysis/skills-recommendations`, formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
+            await axios.post(`${endpoint}/ResumeAnalysis/skills-recommendations`, buildFormData(), {
+                headers: { 'Content-Type': 'multipart/form-data' },
             }).then((response) => {
                 setSingleResponse(response.data)
             }).finally(() => {
@@ -127,24 +97,24 @@ const Home = () => {
         if (file) {
             if (file.type === 'application/pdf') {
                 setSelectedFile(file);
-                console.log('PDF file uploaded:', file);
             } else {
                 setSelectedFile(null);
-                alert("The selected file is not a pdf.")
+                setUploadStatus('error');
+                setUploadMessage('Only PDF files are accepted. Please select a PDF.');
+                setTimeout(() => setUploadStatus(''), 3000);
             }
         }
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
         if (!selectedFile) {
             setUploadStatus('error');
-            setUploadMessage('Please select a PDF file first.');
-            setTimeout(() => setUploadStatus(''), 3000);
+            setUploadMessage('No PDF selected — you can still use features without a resume!');
+            setTimeout(() => setUploadStatus(''), 3500);
         } else {
             setUploadStatus('success');
-            setUploadMessage('Resume selected successfully! You can now use the analysis features.');
+            setUploadMessage('Resume confirmed! All features are now personalised to your profile.');
             setBtnDisabled(false);
             setTimeout(() => setUploadStatus(''), 4000);
         }
@@ -176,17 +146,18 @@ const Home = () => {
                 <div className='grid-container' >
                     <div className="row h-100">
                         <div className="col-12 col-md-6 col-lg-5 d-flex justify-content-center">
-                            <Upload 
-                                feature1={Analysis} 
-                                feature2={Mock} 
-                                feature3={CareerPaths} 
-                                feature4={SkillsRecommendation} 
-                                handleFileChange={handleFileChange} 
-                                handleSubmit={handleSubmit} 
-                                btnDisabled={btnDisabled} 
+                            <Upload
+                                feature1={Analysis}
+                                feature2={Mock}
+                                feature3={CareerPaths}
+                                feature4={SkillsRecommendation}
+                                handleFileChange={handleFileChange}
+                                handleSubmit={handleSubmit}
+                                btnDisabled={btnDisabled}
                                 setBtnDisabled={setBtnDisabled}
                                 uploadStatus={uploadStatus}
                                 uploadMessage={uploadMessage}
+                                hasResume={!!selectedFile}
                             />
                         </div>
                         <div className="col-12 col-md-6 col-lg-7 d-flex justify-content-center">
