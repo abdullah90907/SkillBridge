@@ -32,6 +32,7 @@ app.use((req, res, next) => {
 });
 
 app.use('/api/ResumeAnalysis', require('./routes/analysis'));
+app.use('/ResumeAnalysis', require('./routes/analysis'));
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
