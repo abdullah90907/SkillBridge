@@ -1,55 +1,80 @@
 const PlainTextConversion = require('../utilities/PlainTextConversion');
 const GetGemmaResponse = require('../utilities/GemmaResponse');
 
+// Helper to check if text looks like a standard CV/Resume
+const isResumeText = (text) => {
+    if (!text || text.trim().length < 50) return false;
+    const lower = text.toLowerCase();
+    const keywords = [
+        'experience', 'education', 'skills', 'projects', 'work history',
+        'summary', 'curriculum vitae', 'resume', 'contact', 'profile',
+        'employment', 'university', 'bachelor', 'master', 'certification',
+        'technologies', 'responsibilities', 'achievements'
+    ];
+    let matches = 0;
+    for (const kw of keywords) {
+        if (lower.includes(kw)) matches++;
+    }
+    return matches >= 2;
+};
+
 exports.analysisControler = async (req, res) => {
     try {
-        const hasResume = req.body?.hasResume === 'true' && req.file;
+        const hasFile = req.file || (req.body?.hasResume === 'true');
+        let fileText = "";
 
-        let SkillsGaps, RecommendedCourse, RecommendedCertificates, ReleventProjects;
-
-        if (hasResume) {
-            // ── Personalised analysis from uploaded resume ──
-            let resumePath = req.file.path || 'uploads/resume.pdf';
-            let resume = await PlainTextConversion(resumePath);
-
-            const prompt1 = `Here is the detailed resume: ${resume}. Based on the skills mentioned, please identify any skill gaps the candidate has. Provide a list of related missing or underdeveloped skills that could improve their qualifications (Note. Only add related to mentioned skills on resume, don't add every skill). Include suggestions for learning resources and platforms where the candidate can improve these skills. Be sure to reference specific skills from the resume.`
-            const prompt2 = `Here is the detailed resume: ${resume}. Based on the skills mentioned, recommend online courses (both free and paid) that would help the candidate strengthen their skills and make their resume more competitive. Include course names, platforms, URLs, and any additional relevant information about the course.`
-            const prompt3 = `Here is the detailed resume: ${resume}. Based on the skills and job positions mentioned, recommend relevant certifications that would enhance the candidate's qualifications. Include certification names, issuing organizations, URLs, and whether they are free or paid.`
-            const prompt4 = `Here is the detailed resume: ${resume}. Based on the candidate's skills and experience, suggest relevant personal or professional projects that can be worked on to improve their portfolio. These projects should be aligned with their career goals and should help showcase their expertise. Provide project ideas along with any resources or tools that can be used to build them.`
-
-            SkillsGaps = await GetGemmaResponse.main(prompt1);
-            RecommendedCourse = await GetGemmaResponse.main(prompt2);
-            RecommendedCertificates = await GetGemmaResponse.main(prompt3);
-            ReleventProjects = await GetGemmaResponse.main(prompt4);
-
-        } else {
-            // ── General guidance — no resume provided ──
-            const note = `> 📄 **Note:** No resume was shared, so I'm providing general guidance. Upload your resume for a fully personalised analysis!\n\n`;
-
-            SkillsGaps = note + await GetGemmaResponse.main(
-                `I don't have a specific resume to review, but I can still help! List the most commonly overlooked skill gaps that professionals face in 2024 across tech, business, and creative fields. Provide actionable improvement tips and learning resource links for each.`
-            );
-            RecommendedCourse = note + await GetGemmaResponse.main(
-                `Recommend the top 10 most valuable online courses for career growth in 2024 across popular fields like software development, data science, design, and business. Include course names, platforms, URLs, and cost (free/paid).`
-            );
-            RecommendedCertificates = note + await GetGemmaResponse.main(
-                `List the most in-demand professional certifications in 2024 that significantly boost career prospects and salaries. Cover tech, cloud, project management, and data fields. Include issuing organisations, URLs, and whether they are free or paid.`
-            );
-            ReleventProjects = note + await GetGemmaResponse.main(
-                `Suggest 8 impressive portfolio projects that any professional or developer can build to stand out to recruiters in 2024. Include the technologies involved, what skills they demonstrate, and links to learning resources for each project.`
-            );
+        if (req.file) {
+            fileText = await PlainTextConversion(req.file.path || req.file.buffer);
         }
 
+        let notePrefix = "";
+        let analysisPromptContext = "";
+
+        if (req.file && fileText.trim().length > 20) {
+            if (isResumeText(fileText)) {
+                // Case A: Standard Resume/CV
+                analysisPromptContext = `Candidate Resume/CV Content:\n"${fileText.slice(0, 3000)}"\n`;
+            } else {
+                // Case B: Non-Resume Document
+                notePrefix = `> 📝 **Note:** This document doesn't appear to be a standard CV or Resume. However, based on the topics and skills found in your file, here is how it relates to your career growth:\n\n`;
+                analysisPromptContext = `Document Content (Non-Resume):\n"${fileText.slice(0, 3000)}"\nAnalyze the skills, domain knowledge, and concepts mentioned in this document to guide the user's career and skill growth.\n`;
+            }
+        } else {
+            // Case C: No File Uploaded
+            notePrefix = `> 💡 **Note:** No document was uploaded. Here is a concise, balanced overview of key skill gaps, learning paths, and recommended projects:\n\n`;
+            analysisPromptContext = `Provide a concise, balanced guide for a tech/software career professional.\n`;
+        }
+
+        const prompt1 = `${analysisPromptContext}
+Task 1: Identify 3-4 key Skill Gaps or missing related skills. Keep it concise, direct, and bulleted. Include 2 quick learning links/resources. Limit to 150 words.`;
+
+        const prompt2 = `${analysisPromptContext}
+Task 2: Recommend 3 top relevant online courses (free and paid) with platform names, course titles, and quick links. Keep it short and bulleted. Limit to 150 words.`;
+
+        const prompt3 = `${analysisPromptContext}
+Task 3: Recommend 3 valuable professional certifications with issuing organizations and URLs. Keep it concise and bulleted. Limit to 120 words.`;
+
+        const prompt4 = `${analysisPromptContext}
+Task 4: Suggest 3 practical portfolio projects to showcase expertise. Give brief project title, tech stack, and key goal for each. Keep it concise. Limit to 150 words.`;
+
+        // Execute requests concurrently for speed & efficiency
+        const [rawGaps, rawCourses, rawCerts, rawProjects] = await Promise.all([
+            GetGemmaResponse.main(prompt1),
+            GetGemmaResponse.main(prompt2),
+            GetGemmaResponse.main(prompt3),
+            GetGemmaResponse.main(prompt4)
+        ]);
+
         return res.json({
-            SkillsGaps,
-            RecommendedCourse,
-            RecommendedCertificates,
-            ReleventProjects,
+            SkillsGaps: notePrefix + rawGaps,
+            RecommendedCourse: rawCourses,
+            RecommendedCertificates: rawCerts,
+            ReleventProjects: rawProjects,
             Type: "Analysis"
         });
 
     } catch (error) {
-        console.error('Error:', error);
-        res.status(500).json({ error: 'Something went wrong. Please try again.' });
+        console.error('Error in ResumeAnalysis:', error);
+        res.status(500).json({ error: 'Failed to perform analysis. Please try again.' });
     }
 };

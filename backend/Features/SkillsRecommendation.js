@@ -1,45 +1,50 @@
 const PlainTextConversion = require('../utilities/PlainTextConversion');
 const GemmaResponse = require('../utilities/GemmaResponse');
 
+const isResumeText = (text) => {
+    if (!text || text.trim().length < 50) return false;
+    const lower = text.toLowerCase();
+    const keywords = ['experience', 'education', 'skills', 'projects', 'work history', 'summary', 'curriculum vitae', 'resume', 'contact', 'profile'];
+    let matches = 0;
+    for (const kw of keywords) {
+        if (lower.includes(kw)) matches++;
+    }
+    return matches >= 2;
+};
+
 exports.RecommendSkills = async (req, res) => {
+    try {
+        let fileText = "";
+        if (req.file) {
+            fileText = await PlainTextConversion(req.file.path || req.file.buffer);
+        }
 
-    const resumePath = 'uploads/resume.pdf';
-    const Text = await PlainTextConversion(resumePath);
+        let notePrefix = "";
+        let promptContext = "";
 
-    const Prompt = `Please analyze the following resume and provide specific technical and soft skill recommendations for career advancement.
+        if (req.file && fileText.trim().length > 20) {
+            if (isResumeText(fileText)) {
+                promptContext = `Based on candidate resume content: "${fileText.slice(0, 3000)}"`;
+            } else {
+                notePrefix = `> 📝 **Note:** This document doesn't appear to be a standard CV or Resume. Based on the concepts found in your file, here are recommended skills & learning roadmaps:\n\n`;
+                promptContext = `Based on document content: "${fileText.slice(0, 3000)}"`;
+            }
+        } else {
+            notePrefix = `> 💡 **Note:** No document was uploaded. Here is a concise, balanced skill roadmap for core technical & soft skills:\n\n`;
+            promptContext = `Provide a concise skill roadmap for modern tech professionals (software engineering, data, AI).`;
+        }
 
-                    Resume:${Text}
+        const Prompt = `${promptContext}
+Task: Recommend 3 essential skills to master with a brief Beginner -> Intermediate -> Advanced learning roadmap for each. Keep it balanced, highly concise, structured with bullet points, and include 1-2 platform links. Limit to under 250 words total.`;
 
-                    Please consider the following in your recommendations:
+        const SkillsRoadMap = await GemmaResponse.main(Prompt);
 
-                    Current role and industry
-                    Career goals
-                    Areas of interest
-                    Please provide structured learning paths for each recommended skill, starting from beginner to advanced levels. Also share hyperlinks of websites, Lectures.
-
-                    And above all a roadmap for beginner to advance in mentioned skills only.
-
-                    Example Learning Path:
-
-                    Skill: Python Programming
-
-                    Beginner:
-                    Complete a beginner's Python course on Coursera or edX
-                    Practice with Python exercises on HackerRank or Codewars
-                    Intermediate:
-                    Learn data structures and algorithms in Python
-                    Work on personal projects using Python frameworks like Django or Flask
-                    Advanced:
-                    Explore machine learning and data science with Python libraries like NumPy, Pandas, Scikit-learn, and TensorFlow
-                    Contribute to open-source Python projects
-                    Please tailor your recommendations to my specific experience and career goals.
-
-                    Remember to be as specific as possible in your resume and career goals to get the most accurate and relevant recommendations`;
-
-    const SkillsRoadMap = await GemmaResponse.main(Prompt);
-
-    return res.json({
-        SkillsRoadMap,
-        Type: "Recommend"
-    })
+        return res.json({
+            SkillsRoadMap: notePrefix + SkillsRoadMap,
+            Type: "Recommend"
+        });
+    } catch (error) {
+        console.error('Error recommending skills:', error);
+        return res.status(500).json({ error: 'Failed to generate skills recommendation' });
+    }
 };

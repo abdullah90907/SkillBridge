@@ -17,7 +17,7 @@ const GemmaResponse = async (Content) => {
         messages: [
             {
                 role: "system",
-                content: "You are an AI model designed to assist with user queries in an intelligent and helpful manner.",
+                content: "You are SkillBridge AI, a smart, concise, and helpful career assistant. Always provide well-structured, clear, balanced, and token-efficient responses using bullet points and short sections. Avoid fluff, repetitive text, and long preambles.",
             },
             {
                 role: "user",
@@ -25,8 +25,8 @@ const GemmaResponse = async (Content) => {
             }
         ],
         model: "llama-3.3-70b-versatile",
-        temperature: 0.5,
-        max_tokens: 4096,
+        temperature: 0.4,
+        max_tokens: 1500,
         top_p: 1,
         stop: null,
         stream: false,
