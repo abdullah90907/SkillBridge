@@ -2,11 +2,18 @@ import React from 'react'
 import '../../Main.css'
 import { Button, Form } from 'react-bootstrap'
 
-const Upload = ({ feature1, feature2, feature3, feature4, handleFileChange, handleSubmit, uploadStatus, uploadMessage, hasResume }) => {
+const Upload = ({ feature1, feature2, feature3, feature4, handleFileChange, handleSubmit, uploadStatus, uploadMessage, hasResume, onOpenDemo }) => {
 
     return (
         <div className="section-left">
-            <h3><span>Upload Resume / CV</span></h3>
+            <div className="upload-header-row d-flex justify-content-between align-items-center mb-3">
+                <h3 className="mb-0"><span>Upload Resume / CV</span></h3>
+                {onOpenDemo && (
+                    <button className="watch-demo-pill-btn" onClick={onOpenDemo} title="Watch Platform Demo">
+                        <span className="demo-play-icon">▶</span> Demo
+                    </button>
+                )}
+            </div>
 
             <div className='upload-container'>
                 <div className='upload'>

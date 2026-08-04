@@ -3,6 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './Main.css'
 import LLM from './Components/LLM/LLM';
 import Upload from './Components/FileUpload/Upload';
+import WatchDemoModal from './Components/CustomModal/WatchDemoModal';
 import { endpoint } from './utils/Endpoint';
 import axios from 'axios'
 
@@ -15,6 +16,7 @@ const Home = () => {
     const [showSpinner, setShowSpinner] = useState(false)
     const [uploadStatus, setUploadStatus] = useState('')
     const [uploadMessage, setUploadMessage] = useState('')
+    const [showDemoModal, setShowDemoModal] = useState(false)
 
     // Shared helper — builds FormData with resume if available
     const buildFormData = () => {
@@ -120,6 +122,12 @@ const Home = () => {
         }
     };
 
+    const handleSelectFeatureFromDemo = (featureIndex) => {
+        if (featureIndex === 0) Analysis();
+        else if (featureIndex === 1) Mock();
+        else if (featureIndex === 2) CareerPaths();
+        else if (featureIndex === 3) SkillsRecommendation();
+    };
 
     return (
         <>
@@ -127,7 +135,7 @@ const Home = () => {
                 {/* ── Navbar ── */}
                 <div className='main-outside-div' >
                     <nav className="boot-nav navbar navbar-expand-lg">
-                        <div className="container-fluid d-flex justify-content-center">
+                        <div className="container-fluid d-flex justify-content-between align-items-center">
                             <a className="navbar-brand" href="#home">
                                 <div className="navbar-logo-wrap">
                                     <img
@@ -138,6 +146,17 @@ const Home = () => {
                                 <span className="navbar-brand-text">SkillBridge</span>
                                 <span className="nav-badge">AI</span>
                             </a>
+
+                            {/* Watch Demo Button with Balance Animation */}
+                            <button
+                                className="watch-demo-btn"
+                                onClick={() => setShowDemoModal(true)}
+                                title="Watch SkillBridge Platform Demo"
+                            >
+                                <span className="demo-play-icon">▶</span>
+                                <span className="watch-demo-text">Watch Demo</span>
+                                <span className="watch-demo-badge">Live</span>
+                            </button>
                         </div>
                     </nav>
                 </div>
@@ -158,6 +177,7 @@ const Home = () => {
                                 uploadStatus={uploadStatus}
                                 uploadMessage={uploadMessage}
                                 hasResume={!!selectedFile}
+                                onOpenDemo={() => setShowDemoModal(true)}
                             />
                         </div>
                         <div className="col-12 col-md-6 col-lg-7 d-flex justify-content-center">
@@ -165,6 +185,13 @@ const Home = () => {
                         </div>
                     </div>
                 </div>
+
+                {/* ── Watch Demo Modal ── */}
+                <WatchDemoModal
+                    show={showDemoModal}
+                    handleClose={() => setShowDemoModal(false)}
+                    onSelectFeature={handleSelectFeatureFromDemo}
+                />
 
             </div>
         </>
